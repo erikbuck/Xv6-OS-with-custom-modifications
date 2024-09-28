@@ -1,0 +1,9 @@
+{
+    "makefile.configureOnOpen": true,
+    "files.associations": {
+        "sleeplock.h": "c",
+        "fs.h": "c",
+        "types.h": "c",
+        "stdint.h": "c"
+    }
+}
