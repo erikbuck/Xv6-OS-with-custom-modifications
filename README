@@ -1,20 +1,7 @@
-Features added in the vanilla xv6 version are:
-- cp system call
-- ps system call
-- nice system call
-- scheduling policy is changed from round robin to priority round robin
+NOTE: we have stopped maintaining the x86 version of xv6, and switched
+our efforts to the RISC-V version
+(https://github.com/mit-pdos/xv6-riscv.git)
 
-Running Instructions:
-- Clone the repo and inside the directory run the commands below:
-  1. make
-  2. make qemu-nox
-  
- For more info on the code, you can head to my medium post:
- https://medium.com/@harshalshree03/xv6-implementing-ps-nice-system-calls-and-priority-scheduling-b12fa10494e4?source=friends_link&sk=64940cd850e9ef493b38a3264a1c6ad7
- 
-  
- The original README is kept intact:
----------------------------------------------------------------------------
 xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
 Version 6 (v6).  xv6 loosely follows the structure and style of v6,
 but is implemented for a modern x86-based multiprocessor using ANSI C.
@@ -52,8 +39,7 @@ Copyright 2006-2018 Frans Kaashoek, Robert Morris, and Russ Cox.
 
 ERROR REPORTS
 
-We switched our focus to xv6 on RISC-V; see the mit-pdos/xv6-riscv.git
-repository on github.com.
+We don't process error reports (see note on top of this file).
 
 BUILDING AND RUNNING XV6
 
