@@ -249,6 +249,7 @@ static struct inode *create(char *path, short type, short major, short minor) {
   if ((ip = dirlookup(dp, name, 0)) != 0) {
     iunlockput(dp);
     ilock(ip);
+
     if(type == T_FILE && ip->type == T_FILE) {
       // Nothing to do because file already exists
       return ip;
@@ -257,6 +258,7 @@ static struct inode *create(char *path, short type, short major, short minor) {
       // Nothing to do because device not created this way see mknod()
       return ip;
     }
+
     iunlockput(ip);
     return 0;
   }
