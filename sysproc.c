@@ -71,3 +71,9 @@ int sys_uptime(void) {
   release(&tickslock);
   return xticks;
 }
+
+int sys_shutdown(void)
+{
+  shutdown();
+  return 0;
+}

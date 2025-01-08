@@ -190,6 +190,9 @@ void switchkvm(void);
 int copyout(pde_t *, uint32_t, void *, uint32_t);
 void clearpteu(pde_t *pgdir, char *uva);
 
+// kshutdown.c
+void            shutdown(void);
+
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
 
