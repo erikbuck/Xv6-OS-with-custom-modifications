@@ -26,6 +26,9 @@ void cprintf(char *, ...);
 void consoleintr(int (*)(void));
 void panic(char *) __attribute__((noreturn));
 
+// dhello.c
+void helloinit(void);
+
 // exec.c
 int exec(char *, char **);
 
@@ -189,6 +192,9 @@ void switchuvm(struct proc *);
 void switchkvm(void);
 int copyout(pde_t *, uint32_t, void *, uint32_t);
 void clearpteu(pde_t *pgdir, char *uva);
+
+// kshutdown.c
+void            shutdown(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
