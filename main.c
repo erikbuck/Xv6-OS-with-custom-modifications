@@ -22,7 +22,10 @@ int main(void) {
   seginit();                                  // segment descriptors
   picinit();                                  // disable pic
   ioapicinit();                               // another interrupt controller
-  consoleinit();                              // console hardware
+  consoleinit();                              // /dev/console hardware
+  
+  helloinit();                                // /dev/hello
+                              
   uartinit();                                 // serial port
   pinit();                                    // process table
   tvinit();                                   // trap vectors

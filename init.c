@@ -10,12 +10,22 @@ char *argv[] = {"sh", 0};
 int main(void) {
   int pid, wpid;
 
-  if (open("console", O_RDWR) < 0) {
-    mknod("console", 1, 1);
-    open("console", O_RDWR);
+  mkdir("dev");
+
+  if (open("dev/console", O_RDWR) < 0) {
+    mknod("dev/console", 1, 1);
+    open("dev/console", O_RDWR);
   }
   dup(0); // stdout
   dup(0); // stderr
+
+  // Only 10 device major numbers are allowed by param.h
+  int hellofd = open("dev/hello", O_RDWR);
+  if(hellofd < 0){
+    mknod("dev/hello", 7, 1); // 7 is major number, 1 is minor number 
+    hellofd = open("dev/hello", O_RDWR);
+  }
+  close(hellofd);
 
   for (;;) {
     printf(1, "init: starting sh\n");
