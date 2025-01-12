@@ -111,10 +111,10 @@ bootblock: kkernel/bootasm.S kkernel/bootmain.c
 	$(OBJCOPY) -S -O binary -j .text kkernel/bootblock.o bootblock
 	./sign.pl bootblock
 
-kentryother: kkernel/kentryother.S
+entryother: kkernel/kentryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c kkernel/kentryother.S -o kkernel/kentryother.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7000 -o kkernel/bootblockother.o kkernel/kentryother.o
-	$(OBJCOPY) -S -O binary -j .text kkernel/bootblockother.o kentryother
+	$(OBJCOPY) -S -O binary -j .text kkernel/bootblockother.o entryother
 	$(OBJDUMP) -S kkernel/bootblockother.o > kkernel/kentryother.asm
 
 initcode: kkernel/initcode.S
@@ -123,8 +123,8 @@ initcode: kkernel/initcode.S
 	$(OBJCOPY) -S -O binary kkernel/initcode.out initcode
 	$(OBJDUMP) -S kkernel/initcode.o > kkernel/initcode.asm
 
-kernel: $(KOBJS) kkernel/kentry.o kentryother initcode kernel.ld
-	$(LD) $(LDFLAGS) -T kernel.ld -o kernel kkernel/kentry.o $(KOBJS) -b binary initcode kentryother
+kernel: $(KOBJS) kkernel/kentry.o entryother initcode kernel.ld
+	$(LD) $(LDFLAGS) -T kernel.ld -o kernel kkernel/kentry.o $(KOBJS) -b binary initcode entryother
 	$(OBJDUMP) -S kernel > kernel.asm
 	$(OBJDUMP) -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
 
