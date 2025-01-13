@@ -79,9 +79,9 @@ AS = $(TOOLPREFIX)as
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
-CFLAGS = -I. -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -Wno-array-bounds -Wno-infinite-recursion
+CFLAGS = -I. -I./kkernel -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -Wno-array-bounds -Wno-infinite-recursion
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
-ASFLAGS = -I. -m32 -gdwarf-2 -Wa,-divide
+ASFLAGS = -I. -I./kkernel -m32 -gdwarf-2 -Wa,-divide
 # FreeBSD ld wants ``elf_i386_fbsd''
 LDFLAGS += -z noexecstack -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
 
@@ -153,11 +153,11 @@ kkernel/kvectors.S: vectors.pl
 #	$(OBJDUMP) -S $@ > $*.asm
 #	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
 
-#_forktest: forktest.o $(ULIB)
-#	# forktest has less library code linked in - needs to be small
+#_testfork: testfork.o $(ULIB)
+#	# testfork has less library code linked in - needs to be small
 #	# in order to be able to max out the proc table.
-#	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest forktest.o ulib.o usys.o
-#	$(OBJDUMP) -S _forktest > forktest.asm
+#	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _testfork testfork.o ulib.o usys.o
+#	$(OBJDUMP) -S _testfork > testfork.asm
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.  More
@@ -166,14 +166,11 @@ kkernel/kvectors.S: vectors.pl
 .PRECIOUS: %.o
 
 
+mkfs: mkfs.c fs.h
+	gcc -Werror -Wall -o mkfs mkfs.c
+
 fs.img: mkfs README
-	pushd user
-	make all
-	popd 
-	pushd ./userbin
-	make fs.img
-	mv fs.img ..
-	popd
+	pushd user; make all; make fs; popd 
 
 -include *.d
 
@@ -248,8 +245,8 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 # check in that version.
 
 EXTRA=\
-	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
-	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
+	mkfs.c ulib.c user.h cat.c echo.c testfork.c grep.c kill.c\
+	ln.c ls.c mkdir.c rm.c testfs.c testuser.c wc.c zombie.c\
 	printf.c malloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\

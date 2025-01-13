@@ -38,6 +38,7 @@ struct devsw {
 
 extern struct devsw devsw[];
 
+// Device major numbers
 #define CONSOLE 1
 #define HELLO 7
 

@@ -47,6 +47,7 @@ endif
 ULIB = ../ulib.o ../usys.o ../printf.o ../malloc.o
 
 .PHONY: all
+.PHONY: fs
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.  More
@@ -57,7 +58,7 @@ ULIB = ../ulib.o ../usys.o ../printf.o ../malloc.o
 UPROGS=\
 	_cat\
 	_echo\
-	_forktest\
+	_testfork\
 	_grep\
 	_init\
 	_kill\
@@ -66,18 +67,18 @@ UPROGS=\
 	_mkdir\
 	_rm\
 	_sh\
-	_stressfs\
-	_usertests\
 	_wc\
 	_zombie\
 	_shutdown\
+	_testfs\
+	_testuser\
 	_testdevhello\
 
 all: $(UPROGS)
 
 
-fs.img: mkfs ../README $(UPROGS)
-	../mkfs fs.img ../README $(UPROGS)
+fs: ../README $(UPROGS)
+	pushd ../userbin; ls -l; ../mkfs fs.img ../README $(UPROGS); mv fs.img .. ; popd
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -85,11 +86,12 @@ _%: %.o $(ULIB)
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
 	mv $@ ../userbin
 
-_forktest: forktest.o $(ULIB)
-	# forktest has less library code linked in - needs to be small
+_testfork: testfork.o $(ULIB)
+	# testfork has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
-	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest forktest.o ../ulib.o ../usys.o
-	$(OBJDUMP) -S _forktest > forktest.asm
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _testfork testfork.o ../ulib.o ../usys.o
+	$(OBJDUMP) -S _testfork > testfork.asm
+	mv $@ ../userbin
 
 clean: 
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
